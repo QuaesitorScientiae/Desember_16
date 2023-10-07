@@ -1,4 +1,5 @@
-window.addEventListener('DOMContentLoaded', () => {
+const nav = () => {
+
     const menu = document.querySelector('.menu'),
     menuItem = document.querySelectorAll('.menu_item'),
     hamburger = document.querySelector('.hamburger');
@@ -12,6 +13,8 @@ window.addEventListener('DOMContentLoaded', () => {
         item.addEventListener('click', () => {
             hamburger.classList.toggle('hamburger_active');
             menu.classList.toggle('menu_active');
-        })
-    })
-})
+        });
+    });
+};
+
+export default nav;

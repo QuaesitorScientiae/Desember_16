@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+    
   },
   "author": "",
   "license": "ISC",
@@ -23,8 +24,15 @@
     "gulp-rm": "^2.0.0",
     "gulp-sass": "^5.1.0",
     "gulp-sourcemaps": "^3.0.0",
-    "gulp-tinypng-nokey": "^1.1.0",
-    "sass": "^1.66.1"
+    "sass": "^1.66.1",
+    "@babel/core": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "babel": "^6.23.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.6",
+    "core-js": "^3.4.2",
+    "webpack": "^4.41.2",
+    "webpack-stream": "^5.2.1"
   },
   "browserslist": [
     "last 2 version",

@@ -8,10 +8,10 @@ const cleanCSS = require('gulp-clean-css');
 const rm = require( 'gulp-rm');
 const gulpif = require('gulp-if');
 const concat = require('gulp-concat');
-
+const webpack = require("webpack-stream");
 
 const env = "dev";
-
+const dist = "./dist/";
 
 
 
@@ -94,14 +94,77 @@ task('style', function () {
 
 })
 
+task("build-js", () => {
+    return src("./src/js/main.js")
+                .pipe(webpack({
+                    mode: 'development',
+                    output: {
+                        filename: 'script.js'
+                    },
+                    watch: false,
+                    devtool: "source-map",
+                    module: {
+                        rules: [
+                          {
+                            test: /\.m?js$/,
+                            exclude: /(node_modules|bower_components)/,
+                            use: {
+                              loader: 'babel-loader',
+                              options: {
+                                presets: [['@babel/preset-env', {
+                                    debug: true,
+                                    corejs: 3,
+                                    useBuiltIns: "usage"
+                                }]]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                }))
+                .pipe(dest(dist))
+                .pipe(browserSync.stream());
+});
+
+
+task("build-prod-js", () => {
+    return src("./src/js/main.js")
+                .pipe(webpack({
+                    mode: 'production',
+                    output: {
+                        filename: 'script.js'
+                    },
+                    module: {
+                        rules: [
+                          {
+                            test: /\.m?js$/,
+                            exclude: /(node_modules|bower_components)/,
+                            use: {
+                              loader: 'babel-loader',
+                              options: {
+                                presets: [['@babel/preset-env', {
+                                    corejs: 3,
+                                    useBuiltIns: "usage"
+                                }]]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                }))
+                .pipe(dest(dist));
+});
+
+
 task('watch', function(){
     watch("src/sass/**/*.+(scss|sass)",parallel('style'))
     watch("src/*.html").on("change", series( 'copy_html', browserSync.reload))
     watch("src/img/**/*").on("change", series( 'copy_img', browserSync.reload))
     watch("src/fonts/**/*").on("change", series( 'copy_fonts', browserSync.reload))
-    watch("src/js/**/*").on("change", series( 'copy_js', browserSync.reload))
+    watch("src/js/**/*").on("change", series( "build-js", browserSync.reload))
     watch("src/mp3/**/*").on("change", series( 'copy_assets', browserSync.reload))
 
 });
 
-task('default', series('clean', parallel('copy_html','copy_css_bootstrap', 'copy_img', 'copy_fonts', 'copy_js', 'copy_assets', 'style'), parallel('server','watch')));
+task('default', series('clean', parallel('copy_html','copy_css_bootstrap', 'copy_img', 'copy_fonts',  'copy_assets', 'style', "build-js"), parallel('server','watch' )));
+task('prod', series('clean', parallel('copy_html','copy_css_bootstrap', 'copy_img', 'copy_fonts',  'copy_assets', 'style',"build-prod-js"), parallel('server','watch' )));
