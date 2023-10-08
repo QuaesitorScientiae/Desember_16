@@ -70,12 +70,8 @@ task('copy_css_bootstrap', function () {
 }
 )
 
-const slyles = [    
-    "src/sass/**/*.+(scss|sass)"
-]
-
 task('style', function () {
-    return src(slyles)
+    return src("src/sass/style.sass")
         .pipe(gulpif(env == "dev", sourcemaps.init())) 
         .pipe(concat('style.sass'))                 
         .pipe(sass(/* {outputStyle: 'compressed'} */).on('error', sass.logError))
